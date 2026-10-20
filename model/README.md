@@ -84,17 +84,3 @@ print("Verified:", filename)
 ```
 
 Continue with the [ASE examples](../ase_interface/README.md) or [ASH examples](../ash_interface/README.md).
-
-## Earlier model files
-
-The five earlier weights retain their original filenames and mappings for compatibility:
-
-| Original filename | Original mapping |
-|---|---|
-| `DPA-3-F.pt` | Direct DFT-level model |
-| `DPA-3-DF.pt` | DFT-level Δ model |
-| `DPA-3-F@DeePHF.pt` | Direct DeePHF-level model |
-| `DPA-3-DF@DeePHF.pt` | DeePHF-level Δ model |
-| `DPA-3-pretrain.pt` | Pretrained model |
-
-For the earlier DeePHF models, the explicitly selected head is `CC`. The versioned release uses the architecture/protocol/seed naming scheme above.

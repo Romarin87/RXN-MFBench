@@ -45,5 +45,3 @@ The earlier work is described in [*General reactive machine learning potentials 
   year={2025}
 }
 ```
-
-The five earlier weights in `model/` retain their original filenames and mappings; see the [compatibility notes](model/README.md#earlier-model-files).
