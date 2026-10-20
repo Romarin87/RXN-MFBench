@@ -1,6 +1,6 @@
 # Models
 
-Download weights from [GitHub Release `models-v1.0.0`](https://github.com/Romarin87/RXN-MFBench/releases/tag/models-v1.0.0). The release contains 52 files: four architectures × (one pretrained model + four protocols × three seeds).
+Download weights from [GitHub Release `models-v1.0.0`](https://github.com/Romarin87/RXN-MFBench/releases/tag/models-v1.0.0). The release contains 52 model files: four architectures × (one pretrained model + four protocols × three seeds).
 
 ## Architectures and filenames
 

@@ -58,7 +58,7 @@ class DP_xTB(Calculator):
     >>>                        (1.9575, 1, 1),
     >>>                        (1., 1., 1.)],
     >>>             cell=[100, 100, 100],
-    >>>             calculator=DP_xTB(model="DPA3-DF-seed123.pt"))
+    >>>             calculator=DP_xTB(model="model/DPA3-DF-seed123.pt"))
     >>> print(water.get_potential_energy())
     >>> print(water.get_forces())
 

@@ -42,7 +42,7 @@ The earlier work is described in [*General reactive machine learning potentials 
 ```bibtex
 @article{li2025general,
   title={General reactive machine learning potentials for CHON elements},
-  author={Li, Bowen and Mi, Sixuan and Xiao, Jin and Duo, Zhang and Shuwen, Zhang and Zhang, John and Wang, Han and Zhu, Tong},
+  author={Li, Bowen and Mi, Sixuan and Xiao, Jin and Zhang, Duo and Zhang, Shuwen and Zhang, John and Wang, Han and Zhu, Tong},
   year={2025}
 }
 ```
