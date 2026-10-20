@@ -29,9 +29,9 @@ __all__ = ["DP_xTB"]
 
 
 class DP_xTB(Calculator):
-    """Implementation of ASE deepmd calculator.
+    """ASE calculator combining a DeePMD correction with GFN2-xTB.
 
-    Implemented properties are `energy`, `forces` and `stress`
+    Implemented properties are `energy`, `free_energy` and `forces`.
 
     Parameters
     ----------
@@ -52,13 +52,13 @@ class DP_xTB(Calculator):
     Compute potential energy
 
     >>> from ase import Atoms
-    >>> from deepmd.tf.calculator import DP
+    >>> from ase_interface.deepmd_xtb import DP_xTB
     >>> water = Atoms('H2O',
     >>>             positions=[(0.7601, 1.9270, 1),
     >>>                        (1.9575, 1, 1),
     >>>                        (1., 1., 1.)],
     >>>             cell=[100, 100, 100],
-    >>>             calculator=DP_xTB(model="frozen_model.pb"))
+    >>>             calculator=DP_xTB(model="DPA3-DF-seed123.pt"))
     >>> print(water.get_potential_energy())
     >>> print(water.get_forces())
 

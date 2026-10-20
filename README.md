@@ -1,18 +1,44 @@
-# General reactive machine learning potentials for CHON elements
+# RXN-MFBench
 
-This work presents a scalable workflow for developing general and reliable reactive machine learning potentials for systems containing C, H, O, and N elements, achieving high accuracy and transferability for large-scale chemical simulations.
+Models and simulation interfaces for reactive molecular systems containing carbon, hydrogen, nitrogen, and oxygen. RXN-MFBench compares direct and Δ-learning approaches to the target level **ωB97X-D/def2-TZVP**, using **GFN2-xTB** as the low-fidelity reference. The intended application is nonperiodic, neutral, closed-shell CHON chemistry.
 
------
+## Start here
 
-➡️ **[Read the full paper on ChemRxiv](https://chemrxiv.org/engage/chemrxiv/article-details/684ffe583ba0887c33dad39b)**
+- [Models and downloads](model/README.md): architectures, training protocols, seeds, and checksums.
+- [ASE interface](ase_interface/README.md): direct and Δ-model energy/force calculations with DeePMD and MACE.
+- [ASH interface](ash_interface/README.md): DeePMD-based energy and gradient calculations.
+- [Dataset on Hugging Face](https://huggingface.co/datasets/Romarin87/RXN-MFBench): training and evaluation data, units, provenance, and loading examples.
 
------
+## Model release
 
-## How to Cite
+[Release `models-v1.0.0`](https://github.com/Romarin87/RXN-MFBench/releases/tag/models-v1.0.0) contains **52 model files** across **DPA2, DPA3, DPA4-Neo, and MACE**. Each architecture provides one GFN2-xTB pretrained model and four higher-fidelity protocols with seeds `123`, `456`, and `789`.
 
-If you use this work, please cite the following publication:
+| Protocol | Training | Inference |
+|---|---|---|
+| `pretrain` | GFN2-xTB total energies and forces | Direct low-fidelity prediction |
+| `S` | From-scratch training on target DFT energies and forces | Direct target-level prediction |
+| `F` | GFN2-xTB pretraining followed by direct DFT fine-tuning | Direct target-level prediction |
+| `D` | From-scratch training on DFT − GFN2-xTB residuals | Learned residual + online GFN2-xTB |
+| `DF` | GFN2-xTB pretraining followed by residual fine-tuning | Learned residual + online GFN2-xTB |
 
+The `F` and `DF` seeds for an architecture share its released pretrained starting model. The DPA3 models in this release are single-task models.
+
+For example, download one direct DPA4-Neo model from the repository root using the GitHub CLI:
+
+```bash
+gh release download models-v1.0.0 \
+  --repo Romarin87/RXN-MFBench \
+  --pattern DPA4-Neo-F-seed123.pt \
+  --dir model
 ```
+
+The [model catalog](model/models.json) records each filename, download URL, file size, SHA-256 checksum, and inference mode. See [model/SHA256SUMS](model/SHA256SUMS) for checksums.
+
+## Related preprint
+
+The earlier work is described in [*General reactive machine learning potentials for CHON elements* (2025)](https://chemrxiv.org/engage/chemrxiv/article-details/684ffe583ba0887c33dad39b).
+
+```bibtex
 @article{li2025general,
   title={General reactive machine learning potentials for CHON elements},
   author={Li, Bowen and Mi, Sixuan and Xiao, Jin and Duo, Zhang and Shuwen, Zhang and Zhang, John and Wang, Han and Zhu, Tong},
@@ -20,80 +46,4 @@ If you use this work, please cite the following publication:
 }
 ```
 
------
-
-## DPA-3 Environment Setup and Model Usage
-
-This document outlines the steps to set up the `deepmd-kit` environment and use the DPA-3 models. This guide is based on `deepmd-kit-3.1.0`.
-
-### 1\. Environment Setup
-
-For detailed installation instructions, please refer to the official `deepmd-kit` v3.1.0 release page: [https://github.com/deepmodeling/deepmd-kit/releases/tag/v3.1.0](https://github.com/deepmodeling/deepmd-kit/releases/tag/v3.1.0).
-
-#### Environment Activation and Configuration
-
-1.  After installation, activate the environment. By default, it is located in the `/home/xxx/deepmd-kit` directory.
-
-    ```bash
-    # Note: 'xxx' should be replaced with your actual user directory.
-    source activate /home/xxx/deepmd-kit
-    ```
-
-2.  The default environment does not include the `ASE` and `xtb-python` packages, which must be installed manually.
-
-    ```bash
-    # Install ase
-    pip install ase
-
-    # Install xtb-python from the conda-forge channel
-    conda install xtb-python -c conda-forge
-    ```
-
-### 2\. Model Usage
-
-The released model files use the following names:
-
-- `DPA-3-F.pt`: directly trained DFT-level model
-- `DPA-3-DF.pt`: DFT-level $\\Delta$-learning model
-- `DPA-3-F@DeePHF.pt`: directly trained DeePHF-level model
-- `DPA-3-DF@DeePHF.pt`: DeePHF-level $\\Delta$-learning model
-- `DPA-3-pretrain.pt`: pretrained model
-
-#### 2.1. DPA-3-F.pt (Directly Trained Model)
-
-This model is trained directly and can be used in Python through the ASE interface.
-
-```python
-from deepmd.pt.utils.ase_calc import DPCalculator
-from ase.io import read
-
-# Initialize the calculator
-calc = DPCalculator(model="DPA-3-F.pt", device='cuda')
-
-# The remaining steps are consistent with other ASE calculators
-data = read('test.xyz')
-data.calc = calc
-
-# Example calculations
-energy = data.get_potential_energy()
-forces = data.get_forces()
-```
-
-#### 2.2. DPA-3-DF.pt ($\\Delta$-Learning Model)
-
-This is a $\\Delta$-Learning model, and its use requires combination with GFN2-xTB calculations. To use it with the ASE interface in Python, a helper script (`deepmd_xtb.py`) is needed.
-
-```python
-import sys
-
-# Add the directory containing 'deepmd_xtb.py' to the Python path.
-# This example assumes the script is in '/home/xxx/ase_interface'.
-sys.path.append('/home/xxx/ase_interface')
-
-from deepmd_xtb import DP_xTB
-
-# Initialize the calculator
-calc = DP_xTB(model="DPA-3-DF.pt", device='cuda')
-```
-
-For the DeePHF-level models, use `DPA-3-F@DeePHF.pt` or `DPA-3-DF@DeePHF.pt`. If selecting the DeePHF head explicitly, use `head="CC"`.
+The five earlier weights in `model/` retain their original filenames and mappings; see the [compatibility notes](model/README.md#earlier-model-files).
