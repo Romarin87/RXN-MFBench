@@ -1,70 +1,23 @@
 #!/usr/bin/env python3
+"""Run from benchmark/IRC with a first-order saddle in ts_optimized.xyz."""
 
-from __future__ import annotations
-
-import argparse
 import sys
 from pathlib import Path
 
-from ase.io import read, write
-from sella import IRC
+import ash
 
+repo_root = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(repo_root))
+from ash_interface.interface_DPA4_xTB import DPA4_xTBTheory
 
-def load_dp_xtb():
-    repo_root = Path(__file__).resolve().parents[2]
-    ase_interface_dir = repo_root / "ase_interface"
-    if str(ase_interface_dir) not in sys.path:
-        sys.path.insert(0, str(ase_interface_dir))
-    from deepmd_xtb import DP_xTB
+model = repo_root / "model" / "DPA4-Neo-DF-seed123.pt"
+theory = DPA4_xTBTheory(DPAdir=str(model), numcores=1)
+ts = ash.Fragment(xyzfile="ts_optimized.xyz", charge=0, mult=1)
 
-    return DP_xTB
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description="Sella IRC example with DP_xTB calculator.")
-    parser.add_argument("--model", required=True, help="Path to DeepMD model (*.pt).")
-    parser.add_argument(
-        "--input",
-        default="ts_optimized.xyz",
-        help="Starting TS structure for IRC.",
-    )
-    parser.add_argument("--steps", type=int, default=1000, help="Maximum IRC steps.")
-    parser.add_argument(
-        "--direction",
-        choices=["both", "forward", "reverse"],
-        default="both",
-        help="IRC propagation direction.",
-    )
-    parser.add_argument(
-        "--xtb-method",
-        default="GFN2-xTB",
-        help="xTB method passed to DP_xTB.",
-    )
-    parser.add_argument(
-        "--prefix",
-        default="irc",
-        help="Prefix for output files: <prefix>_<direction>.log/.xyz",
-    )
-    return parser.parse_args()
-
-
-def direction_list(direction):
-    if direction == "both":
-        return ["forward", "reverse"]
-    return [direction]
-
-
-def main():
-    args = parse_args()
-    DP_xTB = load_dp_xtb()
-
-    for direction in direction_list(args.direction):
-        atoms = read(args.input)
-        atoms.calc = DP_xTB(model=args.model, method=args.xtb_method)
-        irc = IRC(atoms, logfile=f"{args.prefix}_{direction}.log")
-        irc.run(steps=args.steps, direction=direction)
-        write(f"{args.prefix}_{direction}.xyz", atoms)
-
-
-if __name__ == "__main__":
-    main()
+frequency = ash.NumFreq(
+    theory=theory, fragment=ts, npoint=2, runmode="serial", numcores=1,
+)
+ash.Optimizer(
+    theory=theory, fragment=ts, irc=True,
+    hessian=frequency.hessian, maxiter=500,
+)

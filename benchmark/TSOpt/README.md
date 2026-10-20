@@ -1,20 +1,20 @@
-# Sella TS Optimization Example
+# ASH transition-state optimization
 
-This example follows the same Sella call style used in `sella_dpa3_delta.py` and uses `DP_xTB`.
+Complete the [shared setup](../README.md). Place a transition-state guess in `ts_guess.xyz` in this directory, for example the output of the [NEB example](../NEB/README.md).
 
-## Required input file
-
-- `ts_guess.xyz`
-
-## Run
+From the repository root:
 
 ```bash
 cd benchmark/TSOpt
-python run_tsopt.py --model /path/to/your_model.pt
+python run_tsopt.py
 ```
 
-Useful options:
+`ash.Optimizer(..., TSOpt=True)` refines the guess with geomeTRIC and saves `ts_optimized.xyz`. Check convergence and confirm a first-order saddle: exactly one imaginary vibrational mode corresponding to the intended reaction.
 
-- `--fmax 0.01`
-- `--steps 500`
-- `--no-internal` (disable `internal=True`)
+To continue with [IRC](../IRC/README.md), from this directory:
+
+```bash
+cp ts_optimized.xyz ../IRC/ts_optimized.xyz
+cd ../IRC
+python run_irc.py
+```

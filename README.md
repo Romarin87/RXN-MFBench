@@ -7,6 +7,7 @@ Models and simulation interfaces for reactive molecular systems containing carbo
 - [Models and downloads](model/README.md): architectures, training protocols, seeds, and checksums.
 - [ASE interface](ase_interface/README.md): direct and Δ-model energy/force calculations with DeePMD and MACE.
 - [ASH interface](ash_interface/README.md): DeePMD-based energy and gradient calculations.
+- [ASH reaction-path examples](benchmark/README.md): NEB, transition-state optimization, and IRC.
 - [Dataset on Hugging Face](https://huggingface.co/datasets/Romarin87/RXN-MFBench): training and evaluation data, units, provenance, and loading examples.
 
 ## Model release

@@ -1,20 +1,14 @@
-# Sella IRC Example
+# ASH IRC
 
-This example starts from a TS structure and runs IRC with `DP_xTB` in forward/reverse directions.
+Complete the [shared setup](../README.md). Place an optimized first-order saddle in `ts_optimized.xyz` in this directory, for example from the [TS optimization example](../TSOpt/README.md).
 
-## Required input file
-
-- `ts_optimized.xyz` (or another TS structure file via `--input`)
-
-## Run
+From the repository root:
 
 ```bash
 cd benchmark/IRC
-python run_irc.py --model /path/to/your_model.pt
+python run_irc.py
 ```
 
-Useful options:
+`ash.NumFreq` calculates the numerical Hessian, which is passed to `ash.Optimizer(..., irc=True)` for geomeTRIC IRC propagation. Inspect the reported frequencies: the TS should have exactly one imaginary vibrational mode along the intended reaction coordinate.
 
-- `--direction both|forward|reverse`
-- `--steps 1000`
-- `--prefix irc`
+The IRC trajectory is written to `geometric_OPTtraj_irc.xyz`. Inspect the path and confirm that its endpoints connect to the intended reactant and product.

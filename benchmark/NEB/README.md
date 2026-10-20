@@ -1,21 +1,20 @@
-# ASE NEB Example
+# ASH NEB
 
-This example runs NEB with ASE and `DP_xTB` from `ase_interface/deepmd_xtb.py`.
+Complete the [shared setup](../README.md). Place preoptimized reactant and product geometries in `initial.xyz` and `final.xyz` in this directory. They must contain the same atoms in matching atom order.
 
-## Required input files
-
-- `initial.xyz`
-- `final.xyz`
-
-## Run
+From the repository root:
 
 ```bash
 cd benchmark/NEB
-python run_neb.py --model /path/to/your_model.pt
+python run_neb.py
 ```
 
-Useful options:
+`ash.NEB` runs climbing-image NEB with seven intermediate images (nine images including the endpoints). The saddle-point fragment is saved as `ts_guess.xyz`; if ASH returns no saddle-point fragment, the script raises an error. Inspect NEB convergence before using this guess.
 
-- `--images 7` (total images, including endpoints)
-- `--interpolate idpp` or `--interpolate linear`
-- `--no-climb` (disable climbing image)
+To continue with [TS optimization](../TSOpt/README.md), from this directory:
+
+```bash
+cp ts_guess.xyz ../TSOpt/ts_guess.xyz
+cd ../TSOpt
+python run_tsopt.py
+```
